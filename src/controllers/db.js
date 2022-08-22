@@ -4,78 +4,47 @@ import { PrismaClient as PrismaClient2 } from '../../prisma/generated/client2';
 const prisma1 = new PrismaClient1();
 const prisma2 = new PrismaClient2();
 
-// class IndexController {
-//   static async index(req, res) {
-//     await prisma1.$connect();
-//     await prisma2.$connect();
-//     const usersFromPostgre = await prisma1.user.findMany();
-//     const usersFromMongo = await prisma2.user.findMany();
-//     if (!usersFromPostgre && !usersFromMongo) {
-//       return res.status(404).json({ message: 'No users found' });
-//     }
-//     return res.json(
-//       `usersFromPostgre: ${usersFromPostgre} usersFromMongo: ${usersFromMongo}`
-//     );
-//   }
-// }
-
 async function listData(req, res) {
-  const { msg } = req.params;
-  console.log(msg);
-  await prisma1.$connect();
-  await prisma2.$connect();
-  const usersFromPostgre = await prisma1.user.findMany();
-  const usersFromMongo = await prisma2.user.findMany();
-  if (!usersFromPostgre && !usersFromMongo) {
-    return res.status(404).json({ message: 'No users found' });
+  try {
+    await prisma1.$connect();
+    await prisma2.$connect();
+    const usersFromPostgre = await prisma1.test.findMany();
+    const usersFromMongo = await prisma2.test.findMany();
+    return res.json({
+      usersFromPostgre: usersFromPostgre,
+      usersFromMongo: usersFromMongo,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-  return res.json(
-    `usersFromPostgre: ${usersFromPostgre} usersFromMongo: ${usersFromMongo}`
-  );
 }
 
 async function sendData(req, res) {
-  // prisma1.$connect();
-  prisma2.$connect();
-  // await prisma1.test.create({
-  //   data: {
-  //     title: 'Alice',
-  //     body: 'alice@prisma.io',
-  //   },
-  // });
-  await prisma2.test.create({
-    data: {
-      title: 'Alice',
-      body: 'alice@prisma.io',
-    },
-  });
-
-  const allUsers = await prisma2.test.findMany({});
-  console.log(allUsers, { depth: null });
-}
-
-async function sendDataMongo(req, res) {
-  await prisma2.user.create({
-    data: {
-      name: 'Rich',
-      email: 'hello@prisma.com',
-      posts: {
-        create: {
-          title: 'My first post',
-          body: 'Lots of really interesting stuff',
-          slug: 'my-first-post',
-        },
+  try {
+    const { title, body } = req.body;
+    prisma1.$connect();
+    prisma2.$connect();
+    await prisma1.test.create({
+      data: {
+        title: title,
+        body: body,
       },
-    },
-  });
-
-  const allUsers = await prisma2.user.findMany({
-    include: {
-      posts: true,
-    },
-  });
-  console.log(allUsers, { depth: null });
-  res.status(200).json(allUsers);
+    });
+    await prisma2.test.create({
+      data: {
+        title: title,
+        body: body,
+      },
+    });
+    const allUsersPostgre = await prisma1.test.findMany();
+    const allUsersMongo = await prisma2.test.findMany();
+    // console.log(allUsers, { depth: null });
+    return res.json({
+      data: { postgre: allUsersPostgre, mongo: allUsersMongo },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
-export { listData, sendData, sendDataMongo };
+export { listData, sendData };

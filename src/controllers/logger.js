@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function logToFile(req, res, next) {
+function logToFile(req, res) {
   console.log(req.body);
   const { app, message } = req.body;
   if (!app || !message) {
@@ -16,10 +16,11 @@ function logToFile(req, res, next) {
 function displayLogFile(req, res) {
   console.log(req.query);
   const { app } = req.query;
-  const logFile = fs.createReadStream(`./logs/${app}.txt`);
-  if (!logFile) {
+  const file = `./logs/${app}.txt`;
+  if (!file) {
     return res.status(400).send({ message: 'No log file found' });
   }
+  const logFile = fs.createReadStream(`./logs/${app}.txt`);
   logFile.pipe(res);
 }
 

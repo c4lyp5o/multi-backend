@@ -12,15 +12,14 @@ Router.get('/', (req, res) =>
 );
 
 // db func
-Router.get('/list/:msg', listData);
-Router.get('/send', sendData);
-Router.get('/sendMongo', sendDataMongo);
+Router.get('/list', listData);
+Router.post('/send', sendData);
 
 // logger func
 Router.post('/log', logToFile);
 Router.get('/log', displayLogFile);
 
 // echo func
-Router.post('/echo', echoService);
+Router.get('/echo', echoService);
 
 export default Router;
