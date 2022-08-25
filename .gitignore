@@ -6,5 +6,4 @@ coverage
 build/
 prisma/generated
 prisma/migrations
-db/*
-logs/*
+db/*.db

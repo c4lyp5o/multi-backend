@@ -1,6 +1,6 @@
 import express from 'express';
-import { testEnvironmentVariable } from '../settings';
-import { listData, sendData, sendDataMongo } from '../controllers/db';
+import { welcomeMessage } from '../settings';
+import { listData, sendData } from '../controllers/db';
 import { logToFile, displayLogFile, clearAllLogs } from '../controllers/logger';
 import { echoService } from '../controllers/echo';
 
@@ -8,7 +8,7 @@ const Router = express.Router();
 
 // hello world
 Router.get('/', (req, res) =>
-  res.status(200).json({ message: testEnvironmentVariable })
+  res.status(200).json({ message: welcomeMessage })
 );
 
 // db func

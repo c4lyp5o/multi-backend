@@ -35,7 +35,7 @@ app.use(function (err, req, res, next) {
 
 app.use('*', (req, res) => {
   res.status(404).json({
-    message: `Hey ${req.ip}, we found nothing that you were looking for`,
+    message: `Hey ${req.ip}, maybe you should go to /v1`,
   });
 });
 

@@ -12,32 +12,101 @@ This is a backend for the [Calypsocloud](https://calypsocloud.com) multi service
 
 ## Installation
 
-Install the backend with:
+Generate env file:
 
 ```bash
-npm install
+node ./scripts/genEnv
+```
+
+Generate sqlite database:
+
+```bash
+npx prisma migrate dev --schema prisma/schema3.prisma --name init
+```
+
+Install dependencies:
+
+```bash
+yarn install
+```
+
+Run server:
+
+```bash
+yarn start
+```
+
+### Docker
+
+Build image:
+
+```bash
+docker build -t multi-backend .
+```
+
+Run container:
+
+```bash
+docker run -d -p 6565:6565 multi-backend
 ```
 
 ## Usage
 
-### Configuration
+### Echo service
 
 ```bash
-npm config set calypso-multi-services-public-backend-url http://localhost:3000
-npm config set calypso-multi-services-public-backend-token <token>
+
+curl -X POST -d '{"message": "Hello world"}' http://localhost:6565/v1/echo
+
 ```
 
-### Example
+### Post data to DB (SQLite)
 
 ```bash
-npm run example
+
+curl -X POST -d '{"title": "Hello world", "body":"hey there"}' http://localhost:6565/v1/send
+
+```
+
+### Get data from DB (SQLite)
+
+```bash
+
+curl http://localhost:6565/v1/list
+
+```
+
+### Post log
+
+```bash
+
+curl -X POST -d '{"app": "App name", "message":"Infuriating debug messages"}' http://localhost:6565/v1/log
+
+```
+
+Logs will be saved in `logs/<your app name>.log`
+
+### Read log entries
+
+```bash
+
+curl http://localhost:6565/v1/log?app=<your app name when you logged>
+
+```
+
+### Clear logs
+
+```bash
+
+curl http://localhost:6565/v1/clearlogs
+
 ```
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Calypso Networks
+Copyright (c) 2022 c4lyp5o
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +132,7 @@ SOFTWARE.
 
 ## Contributors
 
-- Coming Soone
+- Coming Soon
 
 ## Changelog
 
