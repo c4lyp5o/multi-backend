@@ -44,7 +44,17 @@ async function displayLogFile(req, res) {
       } else {
         const file = path.resolve(process.cwd(), 'logs', `${app}.log`);
         const logFile = fs.createReadStream(file);
-        return logFile.pipe(res);
+        logFile
+          .on('data', () => {
+            logFile.pipe(res);
+            logFile.destroy();
+          })
+          .on('end', () => {
+            console.log('end');
+          })
+          .on('close', () => {
+            res.end();
+          });
       }
     });
   } catch (err) {
