@@ -35,12 +35,18 @@ async function logToFile(req, res) {
 async function displayLogFile(req, res) {
   try {
     const { app } = req.query;
-    const file = `./logs/${app}.txt`;
-    if (!file) {
-      return res.status(400).send({ message: 'No log file found' });
-    }
-    const logFile = fs.createReadStream(`./logs/${app}.log`);
-    await logFile.pipe(res);
+    const dirPath = path.resolve(process.cwd(), 'logs');
+    fs.readdir(dirPath, (err, files) => {
+      if (err) throw err;
+      console.log(files);
+      if (!files.includes(`${app}.log`)) {
+        return res.status(400).send({ message: 'No log file found' });
+      } else {
+        const file = path.resolve(process.cwd(), 'logs', `${app}.log`);
+        const logFile = fs.createReadStream(file);
+        return logFile.pipe(res);
+      }
+    });
   } catch (err) {
     return res.status(400).send({ message: 'No such file' });
   }
