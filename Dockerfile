@@ -19,6 +19,12 @@ RUN yarn install
 # copy the generated modules and all other files to the container
 COPY . .
 
+# generate environment variables
+RUN node ./scripts/genEnv.js
+
+# run the sqlite generator
+RUN npx prisma migrate dev --schema prisma/schema3.prisma --name init
+
 # our app is running on port 5000 within the container, so need to expose it
 EXPOSE 6565
 

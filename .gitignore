@@ -4,3 +4,7 @@ yarn-error.log
 .nyc_output
 coverage
 build/
+prisma/generated
+prisma/migrations
+db/*
+logs/*
