@@ -14,7 +14,7 @@ async function logToFile(req, res) {
   try {
     const data = new Uint8Array(
       Buffer.from(
-        `${app} - ${new Date().toLocaleTimeString()}, ${new Date().toLocaleDateString()}\n${message}\n`
+        `${new Date().toLocaleTimeString()}, ${new Date().toLocaleDateString()} - ${app} - ${message}\n`
       )
     );
     const promise = fsPromises.writeFile(`./logs/${app}.log`, data, {
@@ -23,12 +23,16 @@ async function logToFile(req, res) {
     await promise;
   } catch (err) {
     console.error(err);
-    return res.status(400).send({ message: err });
+    return res.status(400).json({ message: err });
   }
   // const logFile = fs.createWriteStream(`./logs/${body.app}.txt`, { flags: 'a' });
-  // logFile.write(
-  //   `${req.method} ${req.url} ${app} - ${new Date()}\n${message}\n`
-  // );
+  // logFile
+  // .on('open', () => {
+  //   logFile.write(`${new Date().toLocaleTimeString()}, ${new Date().toLocaleDateString()} - ${app} - ${message}\n`);
+  // })
+  // .on('finish', () => {
+  //   logFile.destroy();
+  // });
   res.status(200).json({ message: 'logged' });
 }
 
@@ -36,7 +40,7 @@ async function displayLogFile(req, res) {
   try {
     const { app } = req.query;
     const dirPath = path.resolve(process.cwd(), 'logs');
-    fs.readdir(dirPath, (err, files) => {
+    fs.readdir(dirPath, async (err, files) => {
       if (err) mkdirSync(dirPath);
       console.log(files);
       if (!files.includes(`${app}.log`)) {
@@ -45,20 +49,20 @@ async function displayLogFile(req, res) {
         const file = path.resolve(process.cwd(), 'logs', `${app}.log`);
         const logFile = fs.createReadStream(file);
         logFile
-          .on('data', () => {
-            logFile.pipe(res);
+          .on('data', (data) => {
+            console.log('sending data');
+            res.write(data);
             logFile.destroy();
-          })
-          .on('end', () => {
-            console.log('end');
+            console.log('stream destroyed');
           })
           .on('close', () => {
-            res.end();
+            console.log('data closed');
+            res.status(200).end();
           });
       }
     });
   } catch (err) {
-    return res.status(400).send({ message: 'No such file' });
+    return res.status(400).json({ message: 'No such file' });
   }
 }
 
