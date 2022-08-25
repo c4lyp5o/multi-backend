@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs, { mkdirSync } from 'fs';
 import path from 'path';
-import fsPromises from 'fs/promises';
+import fsPromises, { mkdir } from 'fs/promises';
 import { Buffer } from 'buffer';
 
 async function logToFile(req, res) {
@@ -37,7 +37,7 @@ async function displayLogFile(req, res) {
     const { app } = req.query;
     const dirPath = path.resolve(process.cwd(), 'logs');
     fs.readdir(dirPath, (err, files) => {
-      if (err) throw err;
+      if (err) mkdirSync(dirPath);
       console.log(files);
       if (!files.includes(`${app}.log`)) {
         return res.status(400).send({ message: 'No log file found' });
