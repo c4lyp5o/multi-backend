@@ -47,18 +47,20 @@ async function displayLogFile(req, res) {
         return res.status(400).send({ message: 'No log file found' });
       } else {
         const file = path.resolve(process.cwd(), 'logs', `${app}.log`);
-        const logFile = fs.createReadStream(file);
-        logFile
-          .on('data', (data) => {
-            console.log('sending data');
-            res.write(data);
-            logFile.destroy();
-            console.log('stream destroyed');
-          })
-          .on('close', () => {
-            console.log('data closed');
-            res.status(200).end();
-          });
+        // const logFile = fs.createReadStream(file);
+        // logFile
+        //   .on('data', (data) => {
+        //     console.log('sending data');
+        //     res.write(data);
+        //     logFile.destroy();
+        //     console.log('stream destroyed');
+        //   })
+        //   .on('close', () => {
+        //     console.log('data closed');
+        //     res.status(200).end();
+        //   });
+        const data = await fsPromises.readFile(file);
+        res.status(200).send(data);
       }
     });
   } catch (err) {
