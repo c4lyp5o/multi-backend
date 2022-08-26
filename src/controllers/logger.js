@@ -59,7 +59,7 @@ async function displayLogFile(req, res) {
         //     console.log('data closed');
         //     res.status(200).end();
         //   });
-        const data = await fsPromises.readFile(file);
+        const data = await fsPromises.readFile(file, 'utf8');
         res.status(200).send(data);
       }
     });
