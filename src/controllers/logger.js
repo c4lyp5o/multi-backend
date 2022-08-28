@@ -17,10 +17,10 @@ async function logToFile(req, res) {
         `${new Date().toLocaleTimeString()}, ${new Date().toLocaleDateString()} - ${app} - ${message}\n`
       )
     );
-    const promise = fsPromises.writeFile(`./logs/${app}.log`, data, {
+    const promise = await fsPromises.writeFile(`./logs/${app}.log`, data, {
       flag: 'a',
     });
-    await promise;
+    res.status(200).json(promise);
   } catch (err) {
     console.error(err);
     return res.status(400).json({ message: err });
@@ -33,7 +33,6 @@ async function logToFile(req, res) {
   // .on('finish', () => {
   //   logFile.destroy();
   // });
-  res.status(200).json({ message: 'logged' });
 }
 
 async function displayLogFile(req, res) {
@@ -59,8 +58,18 @@ async function displayLogFile(req, res) {
         //     console.log('data closed');
         //     res.status(200).end();
         //   });
-        const data = await fsPromises.readFile(file, 'utf8');
-        res.status(200).send(data);
+        await fsPromises.copyFile(
+          file,
+          path.resolve(process.cwd(), 'logs', `${app}_copy.log`)
+        );
+        const sendLog = await fsPromises.readFile(
+          path.resolve(process.cwd(), 'logs', `${app}_copy.log`),
+          'utf-8'
+        );
+        await fsPromises.unlink(
+          path.resolve(process.cwd(), 'logs', `${app}_copy.log`)
+        );
+        res.status(200).json(sendLog);
       }
     });
   } catch (err) {
@@ -80,10 +89,10 @@ async function clearAllLogs(req, res) {
         });
       }
     });
+    res.status(200).json({ message: 'logs cleared' });
   } catch (err) {
     return res.status(400).send({ message: err });
   }
-  res.status(200).json({ message: 'logs cleared' });
 }
 
 export { logToFile, displayLogFile, clearAllLogs };
