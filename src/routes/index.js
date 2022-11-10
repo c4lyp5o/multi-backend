@@ -3,7 +3,7 @@ import { welcomeMessage } from '../settings';
 import { listData, sendData } from '../controllers/db';
 import { logToFile, displayLogFile, clearAllLogs } from '../controllers/logger';
 import { echoService } from '../controllers/echo';
-import { dpimsService } from '../controllers/dpims';
+import { dpimsService, dpimsInfoService } from '../controllers/dpims';
 
 const Router = express.Router();
 
@@ -26,5 +26,6 @@ Router.get('/echo', echoService);
 
 // get dpims
 Router.get('/getdpims', dpimsService);
+Router.get('/getdpimsinfo', dpimsInfoService);
 
 export default Router;
