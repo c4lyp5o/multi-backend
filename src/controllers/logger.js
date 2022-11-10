@@ -20,7 +20,7 @@ async function logToFile(req, res) {
     const promise = await fsPromises.writeFile(`./logs/${app}.log`, data, {
       flag: 'a',
     });
-    res.status(200).json(promise);
+    res.status(200).json(data);
   } catch (err) {
     console.error(err);
     return res.status(400).json({ message: err });

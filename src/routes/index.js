@@ -3,6 +3,7 @@ import { welcomeMessage } from '../settings';
 import { listData, sendData } from '../controllers/db';
 import { logToFile, displayLogFile, clearAllLogs } from '../controllers/logger';
 import { echoService } from '../controllers/echo';
+import { dpimsService } from '../controllers/dpims';
 
 const Router = express.Router();
 
@@ -22,5 +23,8 @@ Router.get('/clearlogs', clearAllLogs);
 
 // echo func
 Router.get('/echo', echoService);
+
+// get dpims
+Router.get('/getdpims', dpimsService);
 
 export default Router;
