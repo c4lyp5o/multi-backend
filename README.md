@@ -1,14 +1,8 @@
-# Calypsocloud multi services public backend
+# ccs multi services public backend
 
 ## Description
 
-This is a backend for the [Calypsocloud](https://calypsocloud.com) multi services platform.
-
-## Requirements
-
-- [Calypsocloud](https://calypsocloud.com)
-- [Calypsocloud multi services](https://calypsocloud.com/docs/multi-services)
-- [Calypsocloud multi services public](https://calypsocloud.com/docs/multi-services-public)
+This is a backend for the [ccs](https://calypsocloud.one) multi services platform.
 
 ## Installation
 
