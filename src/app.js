@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import indexRouter from './routes/index';
 
 const app = express();
-app.use(json());
+app.use(json({ limit: '5mb' }));
 app.use(cors());
 app.use(logger('dev'));
 app.use(cookieParser());

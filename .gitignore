@@ -7,3 +7,4 @@ build/
 prisma/generated
 prisma/migrations
 db/*.db
+db/*.db-journal
